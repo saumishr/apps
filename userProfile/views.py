@@ -40,13 +40,12 @@ import datetime
 import os
 import uuid
 import json
-
 from django.core.urlresolvers import reverse
-from storages.backends.s3boto import S3BotoStorage
 import StringIO
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.views.decorators.csrf import csrf_exempt
 from userProfile.forms import SuggestStoreForm, ContactUsForm
+
 
 def json_error_response(error_codes):
     return HttpResponse(simplejson.dumps(dict(success=False,
@@ -713,7 +712,7 @@ def get_filtered_deallist(request, store_id, sub_category, sIndex, lIndex):
 
 
 def getTrendingStores(request, parent_category, sub_category, sIndex=0, lIndex=0):
-	if request.method == "GET":# and request.is_ajax():
+	if request.method == "GET" and request.is_ajax():
 		latest = settings.STORES_NUM_LATEST
 		blog_parentcategory = None
 		result = None
@@ -787,6 +786,71 @@ def getTrendingStores(request, parent_category, sub_category, sIndex=0, lIndex=0
 			ret_data = {
 				'success': False
 			}			
+		return HttpResponse(json.dumps(ret_data), mimetype="application/json")
+
+	else:
+		raise Http404()
+
+def getTrendingStores_v2(request, sub_category):
+	if request.method == "GET" and request.is_ajax():
+		result = None
+
+		blog_subcategory = None
+		blog_subcategory_slug = sub_category
+		table_name = BlogPost._meta.db_table
+		try:
+			blog_subcategory = BlogCategory.objects.get(slug=slugify(blog_subcategory_slug))
+			parent_category = blog_subcategory.parent_category.all()[0]
+		except:
+			ret_data = {
+				'success': False
+			}
+			return HttpResponse(json.dumps(ret_data), mimetype="application/json")
+
+		if blog_subcategory and parent_category:
+			stores = settings.CATEGORY_STORE_MAP.get(sub_category, [])
+			if len(stores) > 0:
+				result = BlogPost.objects.published().filter(title__in=stores)
+		else:
+			"""
+				raise 404 error, in case categories are not present.
+			"""
+			ret_data = {
+				'success': False
+			}
+			return HttpResponse(json.dumps(ret_data), mimetype="application/json")
+
+		if result:
+			result = result.extra(select={'fieldsum':'price_average + website_ex_average + quality_average + service_average',
+									  'followers': 'SELECT COUNT(*) FROM %s WHERE target_blogpost_id=%s.id' % (Follow._meta.db_table, table_name)},
+									  order_by=( '-overall_average', '-fieldsum', '-comments_count', '-followers',)).distinct() #[:latest]
+
+		isVertical = request.GET.get('v', '0')
+		template = 'generic/new_vendor_list.html'
+
+
+		context = RequestContext(request)
+		context.update({'vendors': result,
+						'is_incremental': True,
+						'subcategory_title': settings.CATEGORY_TITLE_MAP.get(sub_category, '')})
+
+		category_search_url = reverse('get_vendors', kwargs={'parent_category_slug':parent_category.title,
+																'sub_category_slug': sub_category})
+		if result:
+			ret_data = {
+				'html': render_to_string(template, context_instance=context).strip(),
+				'category' : sub_category,
+				'search_url': category_search_url,
+				'success': True
+			}
+		else:
+			template = Template('<div class="color5D fontSize14 halfGutter topHalfGutter">No stores were found for the selected category. Do suggest a store, if you know of one.</div>')
+			ret_data = {
+				'html': template.render(context).strip(),
+				'category' : sub_category,
+				'search_url': category_search_url,
+				'success': True
+			}		
 		return HttpResponse(json.dumps(ret_data), mimetype="application/json")
 
 	else:
@@ -942,18 +1006,9 @@ def shareObject(request, content_type_id, object_id, ):
 	else:
 		raise Http404();
 
-def deleteFileS3(file):
-	"""
-	We cannot use file.path as its not yet implemented in S3BotoStorage backend and threfore throws an exception.
-	file.url returns complete web url. We need to get the path after media/ as bucket/static/media is storage root.
-	"""
-	absolute_url = file.url
-	paths = absolute_url.split('media/')
-	if len(paths) > 0:
-		path = paths[1]
-		storage = S3BotoStorage(location=settings.STORAGE_ROOT)
-		if storage.exists(path):
-			storage.delete(path)
+def deleteFile(file):
+    storage, path = file.storage, file.path
+    storage.delete(path)
 
 def deleteObject(request, content_type_id, object_id ):
     error_codes = []
@@ -1051,12 +1106,12 @@ def deleteObject(request, content_type_id, object_id ):
                 OptionalReviewRatingObj.delete()
 
         elif isinstance(object, GenericWish):
-            try:
-                deleteFileS3(object.wishimage.image)
-            except:
-                pass
-            
-            object.wishimage.delete()
+            if object.wishimage:
+                try:
+                    deleteFile(object.wishimage.image)
+                except:
+                    pass
+                object.wishimage.delete()
 
         """
             Finally nuke the actual object.
@@ -1096,21 +1151,6 @@ def get_object_owner_helper(content_type_id, object_id):
 			
 	return owner
 
-def save_file_s3(file, path=''):
-    ''' Little helper to save a file
-    '''
-    filename = file._get_name()
-    new_filename =  u'{name}.{ext}'.format(  name=uuid.uuid4().hex,
-                                             ext=os.path.splitext(filename)[1].strip('.'))
-
-    dir_path =  str(path) #'%s/%s' % (settings.MEDIA_URL, str(path))
-
-    save_path = os.path.join(dir_path, new_filename)
-    storage=S3BotoStorage(location=settings.STORAGE_ROOT)
-    storage.save(save_path, file)
-
-    return save_path
-
 def save_file(file, path=''):
     ''' Little helper to save a file
     '''
@@ -1118,7 +1158,7 @@ def save_file(file, path=''):
     new_filename =  u'{name}.{ext}'.format(  name=uuid.uuid4().hex,
                                              ext=os.path.splitext(filename)[1].strip('.'))
 
-    dir_path =  '%s/%s' % (settings.MEDIA_URL, str(path))
+    dir_path =  '%s/%s' % (settings.MEDIA_ROOT, str(path))
 
     if not os.path.exists(dir_path):
     	os.makedirs(dir_path)
@@ -1155,19 +1195,17 @@ def edit_blog_image(request, blogpost_id):
 				featuredImageObj = request.FILES['featured_image']
 				if featuredImageObj:
 					new_file_rel_path = 'users/store/%s/images/' % (blogpost.id)
-					new_file_path = save_file_s3(featuredImageObj, new_file_rel_path)
+					new_file_path = save_file(featuredImageObj, new_file_rel_path)
 					if blogpost.featured_image:
-						old_file_path = blogpost.featured_image.path #'%s/%s' % (settings.MEDIA_URL, str(blogpost.featured_image.path))
-						storage = S3BotoStorage(location=settings.STORAGE_ROOT)
-						if storage.exists(old_file_path):
-							storage.delete(old_file_path)
-						
+						old_file_path = '%s/%s' % (settings.MEDIA_ROOT, str(blogpost.featured_image.path))
+						if os.path.exists(old_file_path):
+							os.remove(old_file_path)
+
 					blogpost.featured_image = new_file_path
 					blogpost.save()
 
 				if request.is_ajax():
-					url = os.path.join(settings.MEDIA_URL, blogpost.featured_image.path)
-					return HttpResponse(simplejson.dumps(dict(success=True, image_url=url)))
+					return HttpResponse(simplejson.dumps(dict(success=True, image_url=blogpost.featured_image.url)))
 				else:
 					return HttpResponseRedirect(blogpost.get_absolute_url())
 				

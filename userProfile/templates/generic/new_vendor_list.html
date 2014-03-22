@@ -1,0 +1,40 @@
+{% load static i18n %}
+{% load userProfile_tags %}
+
+{% if not is_incremental %}
+<style>
+.storeMessage{
+	height:auto;
+	display:inline-block;
+	width:50%;
+	padding:8px;
+	box-sizing:border-box;
+}
+</style>
+<div class="showcaseBox halfGutter halfGutterRight">
+		<div class="showcaseContainer topHalfGutter scrollContainer" data-href="{{data_href}}" data-chunk="{{data_chunk}}">
+{% endif %}
+
+			{% for vendor in vendors %}
+				{% get_trends_image vendor as image %}
+				{% if image %}
+					<div class="showcaseItem noGutter">
+						<img style="width:100%;max-height:100%;" class="noBoxShadow" src="{{MEDIA_URL}}{{ image.image }}"/>
+						<div class="showcaseTitle halfGutterInset halfGutterInsetRight">
+							{% comment %}
+								title for that store
+								and put in the blog url here
+							{% endcomment %}
+<div class="yellowBar storeMessage pagination-centered">{{subcategory_title}}</div><div class="greyBar fontSize16 storeMessage pagination-centered"><a class="colorYellow" href="{{vendor.get_absolute_url}}" target="_blank">{{vendor.title|title}}</a></div>
+
+						</div>
+					</div>
+				{% endif %}
+			{% endfor %}
+
+{% if not is_incremental %}
+		</div>
+	<div class="fontSize16 fontTitillium2 pagination-centered" style="margin-top:5px;">
+	{% trans "Find more stores for "%}<a class="radioColor" id="trendingCategory" href="{% url get_vendors 'Flowers, Cakes & Gifts' 'Gifts' %}">Gifts</a></div>
+</div>
+{% endif %}
