@@ -25,7 +25,7 @@
 								title for that store
 								and put in the blog url here
 							{% endcomment %}
-<div class="yellowBar storeMessage pagination-centered">{{subcategory_title}}</div><div class="greyBar fontSize16 storeMessage pagination-centered"><a class="colorYellow" href="{{vendor.get_absolute_url}}" target="_blank">{{vendor.title}}</a></div>
+<div class="yellowBar storeMessage pagination-centered">{{subcategory_title}}</div><div class="greyBar fontSize16 storeMessage pagination-centered"><a class="colorYellow" href="{{vendor.get_absolute_url}}" target="_blank">{{vendor.title|title}}</a></div>
 
 						</div>
 					</div>
