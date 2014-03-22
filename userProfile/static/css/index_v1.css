@@ -1,18 +1,10 @@
 .outerBox {
-	height: 320px;
+	height: 350px;
 	width: 100%;
 }
 .innerBox {
-	height: 150px;
-	overflow: none;
-	padding-left: -2px;
-}
-
-@media (min-width: 1200px) {
-	.innerBox{
-		height: 176px;
-		padding-left: 5px;
-	}
+	height: 290px;
+	overflow: auto;
 }
 
 .topStores {
@@ -258,72 +250,4 @@ input#fakeselect.error + span + div{
 div.thirdCategory.imageCategoryBox:hover span{
 	right: 6px;
 	left: auto;
-}
-.showcaseItem{
-	position: relative;
-	display: inline-block;
-	height: 250px;
-	width: 523px;
-}
-@media (min-width: 1200px) {
-	.showcaseItem{
-		width: 645px;
-	}
-}
-.showcaseItem img {
-	height: 100%;
-}
-.showcaseTitle {
-	position: absolute;
-	bottom: 12px;
-	height: 32px;
-	width: 100%;
-	box-sizing: border-box;
-}
-.showcaseTitle span {
-	height: 30px;
-	max-height: 30px;
-	padding: 12px;
-	line-height: 30px;
-}
-.infoBox {
-	background-image: url('/static/img/infoBox.png');
-	background-repeat: no-repeat;
-	background-size: cover;
-	height: 121px;
-	position: relative;
-}
-.infoBox div{
-	position: absolute;
-	top: 50%;
-	margin-top: -8%;
-}
-@media (min-width: 1200px) {
-	.infoBox{
-		height: 94px;
-	}
-}
-div.container.fancybox-margin{
-	margin-right: auto;
-}
-.showcaseContainer {
-	height: 253px;
-}
-.showcaseContainer .mCSB_horizontal.mCustomScrollBox>.mCSB_scrollTools {
-	overflow: visible !important;
-}
-.showcaseContainer .mCSB_buttonLeft{
-	height: 40px !important;
-	position: absolute !important;
-	top: -120px;
-	left:0px;
-}
-.showcaseContainer .mCSB_buttonRight{
-	height: 40px !important;
-	position: absolute !important;
-	top: -110px;
-	right: 0px !important;
-}
-.showcaseBox{
-	padding-bottom: 5px;
 }

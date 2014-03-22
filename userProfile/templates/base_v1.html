@@ -8,7 +8,6 @@
 <meta name="viewport" content="width=device-width">
 <meta name="keywords" content="{% block meta_keywords %}{% endblock %}">
 <meta name="description" content="{% block meta_description %}{% endblock %}">
-<meta name="p:domain_verify" content="0d9a3196dc7f979f5e928bd4e72e6c30"/>
 <title>{% block meta_title %}{% endblock %}{% if settings.SITE_TITLE %} | {{ settings.SITE_TITLE }}{% endif %}</title>
 <link rel="shortcut icon" href="{% static "img/wishRadioLogo.png" %}">
 
@@ -157,12 +156,13 @@
     {% endautoescape %}
 
     category_namespace.categories = categories;
+
 </script>
 
 {% block extra_head %}{% endblock %}
 
 </head>
-<body class="bodyCustom" style="padding-top:210px;" id="{% block body_id %}body{% endblock %}">
+<body class="bodyCustom" style="padding-top:150px;" id="{% block body_id %}body{% endblock %}">
 
 {% nevercache %}
     {% include "includes/header.html" %}
