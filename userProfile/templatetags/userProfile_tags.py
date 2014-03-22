@@ -685,7 +685,8 @@ def render_stores_for_categories_v2(context, sub_category, latest=settings.STORE
 
 
         return template.render(RequestContext(context['request'], {
-            'vendors' : result
+            'vendors' : result,
+            'subcategory_title': settings.CATEGORY_TITLE_MAP.get(sub_category, '')
         }))
 
 @register.simple_tag(takes_context=True)

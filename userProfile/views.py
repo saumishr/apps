@@ -831,7 +831,8 @@ def getTrendingStores_v2(request, sub_category):
 
 		context = RequestContext(request)
 		context.update({'vendors': result,
-						'is_incremental': True})
+						'is_incremental': True,
+						'subcategory_title': settings.CATEGORY_TITLE_MAP.get(sub_category, '')})
 
 		category_search_url = reverse('get_vendors', kwargs={'parent_category_slug':parent_category.title,
 																'sub_category_slug': sub_category})
