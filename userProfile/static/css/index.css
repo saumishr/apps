@@ -129,7 +129,7 @@
 	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#867278', endColorstr='#433545' ,GradientType=0)";
 	background : linear-gradient(90deg, rgba(134, 114, 120, 0.21) 0%, rgba(92, 74, 86, 0.21) 50%, rgba(67, 53, 69, 0.21) 100%);*/
 	box-shadow : 1px 1px 1px rgba(0, 0, 0, 0.75);
-	vertical-align: bottom;
+	display: table;
 	/*filter: alpha(opacity=21) progid:DXImageTransform.Microsoft.Alpha(opacity=21) progid:DXImageTransform.Microsoft.dropshadow(OffX=1.31, OffY=1.31, Color='#000000') progid:DXImageTransform.Microsoft.gradient(startColorstr='#867278',endColorstr='#433545' , GradientType=1);*/
 }
 .radioSelect{
@@ -145,14 +145,13 @@
 	/*filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=-0.57, OffY=-0.57, Color='#000000') ;*/
 }
 div.imageCategoryBox span{
-	display: none;
-}
-div.imageCategoryBox:hover span{
-	display: block;
-	position: absolute;
-	bottom: 6px;
-	left: 6px;
 	z-index: 2;
+	padding: 6px 3px;
+	display: table-cell;
+	vertical-align: middle;
+	text-align: center;
+	color: rgb(2,151,149);
+	background: none;
 }
 /* dealBox_v will be applied on the deals listed on logged-in home page. */
 #refreshActivity{
@@ -255,20 +254,19 @@ input#fakeselect.error + span + div{
 	left: 118px;
 	top: 2px;
 }
-div.thirdCategory.imageCategoryBox:hover span{
+div.thirdCategory.imageCategoryBox span{
 	right: 6px;
 	left: auto;
 }
 .showcaseItem{
 	position: relative;
 	display: inline-block;
-	max-height: 212px;
-	height: 236px;
-	width: 506px;
+	height: 250px;
+	width: 523px;
 }
 @media (min-width: 1200px) {
 	.showcaseItem{
-		width: 620px;	
+		width: 645px;
 	}
 }
 .showcaseItem img {
@@ -291,21 +289,24 @@ div.thirdCategory.imageCategoryBox:hover span{
 	background-image: url('/static/img/infoBox.png');
 	background-repeat: no-repeat;
 	background-size: cover;
-	height: 137px;
+	height: 121px;
 	position: relative;
 }
 .infoBox div{
 	position: absolute;
 	top: 50%;
-	margin-top: -15%;
+	margin-top: -8%;
 }
 @media (min-width: 1200px) {
 	.infoBox{
-		height: 121px;
+		height: 94px;
 	}
 }
 div.container.fancybox-margin{
 	margin-right: auto;
+}
+.showcaseContainer {
+	height: 253px;
 }
 .showcaseContainer .mCSB_horizontal.mCustomScrollBox>.mCSB_scrollTools {
 	overflow: visible !important;
@@ -313,7 +314,7 @@ div.container.fancybox-margin{
 .showcaseContainer .mCSB_buttonLeft{
 	height: 40px !important;
 	position: absolute !important;
-	top: -110px;
+	top: -120px;
 	left:0px;
 }
 .showcaseContainer .mCSB_buttonRight{
@@ -321,4 +322,7 @@ div.container.fancybox-margin{
 	position: absolute !important;
 	top: -110px;
 	right: 0px !important;
+}
+.showcaseBox{
+	padding-bottom: 5px;
 }
