@@ -165,7 +165,7 @@
 <body class="bodyCustom" style="padding-top:210px;" id="{% block body_id %}body{% endblock %}">
 
 {% nevercache %}
-    {% include "includes/header.html" %}
+    {% include 'includes/header.html' %}
 {% endnevercache %}
 
 {% nevercache %}
@@ -195,7 +195,7 @@
 </div>
 
 {% nevercache %}
-    {% include "includes/footer.html" %}
+    {% include 'includes/footer.html' %}
 {% endnevercache %}
 {% comment %}
 <!-- <footer> -->
@@ -305,6 +305,6 @@
 <script src="{% static "js/html5shiv.js" %}"></script>
 <![endif]-->
 {% block extra_js %}{% endblock %}
-{% include "includes/footer_scripts.html" %}
+{% include 'includes/footer_scripts.html' %}
 </body>
 </html>
