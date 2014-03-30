@@ -52,7 +52,7 @@ $(window).load(function(){
     }
 
     var autoScrollHandler = function() {
-        $scrollContainer.mCustomScrollbar("scrollTo", 645);
+        $scrollContainer.mCustomScrollbar("scrollTo", 645 * elCovered);
         elCovered += 1;
         if(elCovered > $element.find('.showcaseItem').length) {
             $scrollContainer.mCustomScrollbar("scrollTo", "first");
