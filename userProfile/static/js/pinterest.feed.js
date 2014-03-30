@@ -73,7 +73,13 @@
 						// jQuery Isotope function
 						var $c = $('.stream',el);
 						$c.imagesLoaded( function(){
-							$c.isotope({itemSelector : 'li'});
+							if(index === 0) {
+								$c.isotope({itemSelector : 'li'});
+							} else {
+								$c.isotope(
+									 'insert', $(html), undefined
+								);
+							}
 							$('li',$c).fadeIn();
 						});
 					}
