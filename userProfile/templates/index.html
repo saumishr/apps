@@ -41,6 +41,37 @@ $(window).load(function(){
     // setupCustomScrollBar($('#topDealsForStoreCategory'), true, {enable: true, scrollType: "continuous"}, false); //second boolean parameter forces horizontal scrollbar
     var width = $('.showcaseContainer .showcaseItem:first-child').outerWidth();
     setupCustomScrollBar($('#topStoresForStoreCategory'), true, {enable: true, scrollType: "pixels", scrollAmount: width}, false);
+
+    var elCovered = 1;
+    var $element = $('#topStoresForStoreCategory'),
+        $scrollContainer = null;
+    if ($element.hasClass("scrollContainer")) {
+        $scrollContainer = $element;
+    } else {
+        $scrollContainer = $element.find(".scrollContainer");
+    }
+
+    var autoScrollHandler = function() {
+        $scrollContainer.mCustomScrollbar("scrollTo", 645);
+        elCovered += 1;
+        if(elCovered > $element.find('.showcaseItem').length) {
+            $scrollContainer.mCustomScrollbar("scrollTo", "first");
+            elCovered = 1;
+        }
+
+    };
+    var intervalID = setInterval(autoScrollHandler, 5000);
+    $scrollContainer.hover(
+      function() {
+        clearInterval(intervalID);
+        return false;
+      }, function() {
+        elCovered = 1;
+        $scrollContainer.mCustomScrollbar("scrollTo", "first");
+        intervalID = setInterval(autoScrollHandler, 5000);
+        return false;
+      }
+    );
     // setupCustomScrollBar($('#topReviewsForStoreCategory'));
 
     // $(".innerBox").mCustomScrollbar({
