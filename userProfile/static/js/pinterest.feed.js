@@ -18,7 +18,7 @@
 			// Set the default options
 			this.defaults = {
 				id: '', // enter username, pinterest list ID or search keyword
-				results: 100, // number of results to display
+				results: 10, // number of results to display
 				tweetId: '' // twitter username for share links
 			};
 
