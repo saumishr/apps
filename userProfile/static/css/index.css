@@ -48,7 +48,7 @@
 	display:inline-block;
 }
 .dealBox {
-	height: 250px;
+	height: auto;
 	line-height: 250px;
 }
 

@@ -18,65 +18,66 @@
 			// Set the default options
 			this.defaults = {
 				id: '', // enter username, pinterest list ID or search keyword
-				results: 10, // number of results to display
+				results: 100, // number of results to display
 				tweetId: '' // twitter username for share links
 			};
-			
+
 			var o = $.extend(true,this.defaults,options);
 			
 			// Add ul tag to target element
 			$(el).append('<ul class="stream"></ul>');
+			$.each(o.id, function(index) {
+				// Set Pinterest RSS url using Google Feed API
+				var cp = this.split('/'), 
+					ext = cp.length > 1 ? '/rss' : '/feed.rss',
+					href = 'http://www.pinterest.com/'+ this,
+					url = 'http://ajax.googleapis.com/ajax/services/feed/load?v=1.0&num='+o.results+'&callback=?&q=' + encodeURIComponent(href+ext);
 
-			// Set Pinterest RSS url using Google Feed API
-			var cp = o.id.split('/'), 
-				ext = cp.length > 1 ? '/rss' : '/feed.rss',
-				href = 'http://www.pinterest.com/'+o.id,
-				url = 'http://ajax.googleapis.com/ajax/services/feed/load?v=1.0&num='+o.results+'&callback=?&q=' + encodeURIComponent(href+ext);
-
-			// jQuery AJAX call
-			jQuery.ajax({
-				url: url,
-				cache: true,
-				dataType: 'jsonp',
-				success: function(a){
-					a = a.responseData.feed.entries;
-					$.each(a, function(i,item){
-						if(i < o.results){
-							var d = item.publishedDate,
-								img = '<a href="'+item.link+'"><img src="'+$('img',item.content).attr('src')+'" alt="" /></a>',
-								html = '<li>' + img + item.contentSnippet;
+				// jQuery AJAX call
+				jQuery.ajax({
+					url: url,
+					cache: true,
+					dataType: 'jsonp',
+					success: function(a){
+						a = a.responseData.feed.entries;
+						$.each(a, function(i,item){
+							if(i < o.results){
+								var d = item.publishedDate,
+									img = '<a href="'+item.link+'"><img src="'+$('img',item.content).attr('src')+'" alt="" /></a>',
+									html = '<li>' + img + item.contentSnippet;
+									
+								// Add share links
+								html += '<span class="section-share">'+shareLink(item.contentSnippet,item.link,o.tweetId)+'</span>';
 								
-							// Add share links
-							html += '<span class="section-share">'+shareLink(item.contentSnippet,item.link,o.tweetId)+'</span>';
+								// Get time since
+								d = d != '' ? html += '<span class="date">'+nicetime(new Date(d).getTime())+'</span></li>' : '' ;
+							}
 							
-							// Get time since
-							d = d != '' ? html += '<span class="date">'+nicetime(new Date(d).getTime())+'</span></li>' : '' ;
-						}
+							// Add pinterest feed items to stream
+							$('.stream',el).append(html);
+						});
+					},
+					complete: function(){
 						
-						// Add pinterest feed items to stream
-						$('.stream',el).append(html);
-					});
-				},
-				complete: function(){
-					
-					// Code to open new popup window for share links + open other links in new browser tab
-					$('.stream a',el).click(function(e){
-						if($(this).parent().hasClass('section-share')){
-							var u = $(this).attr('href');
-							window.open(u,'sharer','toolbar=0,status=0,width=626,height=436');
-							return false;
-						} else {
-							if(external){this.target = '_blank';}
-						}
-					});
-					
-					// jQuery Isotope function
-					var $c = $('.stream',el);
-					$c.imagesLoaded( function(){
-						$c.isotope({itemSelector : 'li'});
-						$('li',$c).fadeIn();
-					});
-				}
+						// Code to open new popup window for share links + open other links in new browser tab
+						$('.stream a',el).click(function(e){
+							if($(this).parent().hasClass('section-share')){
+								var u = $(this).attr('href');
+								window.open(u,'sharer','toolbar=0,status=0,width=626,height=436');
+								return false;
+							} else {
+								if(external){this.target = '_blank';}
+							}
+						});
+						
+						// jQuery Isotope function
+						var $c = $('.stream',el);
+						$c.imagesLoaded( function(){
+							$c.isotope({itemSelector : 'li'});
+							$('li',$c).fadeIn();
+						});
+					}
+				});
 			});
 		}
 	});
@@ -97,8 +98,8 @@
 	// Creates facebook & twitter share links
 	function shareLink(st,sq,tweetId){
 		var sq = encodeURIComponent(sq), st = encodeURIComponent(st);
-		var s = '<a href="http://www.facebook.com/sharer.php?u='+sq+'&t='+st+'" class="share-facebook"></a>';
-		s += '<a href="https://twitter.com/share?url='+sq+'&text='+st+'&via='+tweetId+'" class="share-twitter"></a>';
+		var s = '<a href="http://www.facebook.com/sharer.php?u='+sq+'&t='+st+'" class="pin-share-facebook"></a>';
+		s += '<a href="https://twitter.com/share?url='+sq+'&text='+st+'&via='+tweetId+'" class="pin-share-twitter"></a>';
 		return s;
     }
 	

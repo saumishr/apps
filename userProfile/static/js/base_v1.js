@@ -73,7 +73,7 @@ var setupCustomScrollBar = function ($element, horizontal_scroll) {
     };
 
     if ($scrollContainer && !$scrollContainer.hasClass('mCustomScrollbar')) {
-        $scrollContainer.imagesLoaded({
+        $scrollContainer.imagesLoadedBase({
             complete: function(images) {
                 if(horizontal_scroll) {
                     $scrollContainer.mCustomScrollbar({

@@ -1,5 +1,5 @@
 (function($) {
-    $.fn.imagesLoaded = function(options) {
+    $.fn.imagesLoadedBase = function(options) {
         var images = this.find("img"), 
             loadedImages = [], 
             options = options;

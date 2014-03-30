@@ -81,7 +81,7 @@ var setupCustomScrollBar = function ($element, horizontal_scroll, enable_button,
     };
 
     if ($scrollContainer && !$scrollContainer.hasClass('mCustomScrollbar')) {
-        $scrollContainer.imagesLoaded({
+        $scrollContainer.imagesLoadedBase({
             complete: function(images) {
                 if(horizontal_scroll) {
                     $scrollContainer.mCustomScrollbar({
@@ -92,6 +92,7 @@ var setupCustomScrollBar = function ($element, horizontal_scroll, enable_button,
                         contentTouchScroll:true,
                         autoDraggerLength: true,
                         scrollButtons: hasScrollButtons,
+                        autoScrollOnFocus: true,
                         callbacks: {
                             onTotalScroll: totalScrollCallback//, // Will be called once scroll reaches bottom.
                             //onTotalScrollOffset:100 //onTotalScroll callback will be fired 100 pixels before bottom.

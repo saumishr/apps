@@ -14,7 +14,7 @@ var display_popup_handler = function(event) {
 	var afterShowCallback = function() {
 								install_follow_handlers();
 								var $scrollContainer = $('.fancybox-inner').find('.scrollContainer');
-								$scrollContainer.imagesLoaded({
+								$scrollContainer.imagesLoadedBase({
             						complete: function(images) {
             							setupCustomScrollBar($scrollContainer);
 								    }

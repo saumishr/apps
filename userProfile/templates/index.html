@@ -15,6 +15,7 @@
     <link rel="stylesheet" class="cssButtons" type="text/css" href="{% static "css/linkPreview.css" %}"/>
     <link rel="stylesheet" class="cssStatics" href="{% static "css/stylesheet.css" %}"/>
     <link rel="stylesheet" href="{% static "css/index.css" %}"/>
+    <link rel="stylesheet" href="{% static "css/pinterest.style.css" %}"/>
     <!-- <link rel="stylesheet" href="{% static "css/jquery.pagewalkthrough.css" %}"/> -->
 {% endcompress %}
 {% endblock %}
@@ -25,6 +26,8 @@
 <script src="{% static "js/jquery.form.js" %}"></script>
 <script src="{% static "js/vallenato.js" %}"></script>
 <script src="{% static "js/linkPreview.js" %}"></script>
+<script src="{% static "js/jquery.isotope.js" %}"></script>
+<script src="{% static "js/pinterest.feed.js" %}"></script>
 <!-- <script src="{% static "js/jquery.pagewalkthrough-1.1.0.min.js" %}"></script> -->
 {% endcompress %}
 {% compress js %}
@@ -41,6 +44,37 @@ $(window).load(function(){
     // setupCustomScrollBar($('#topDealsForStoreCategory'), true, {enable: true, scrollType: "continuous"}, false); //second boolean parameter forces horizontal scrollbar
     var width = $('.showcaseContainer .showcaseItem:first-child').outerWidth();
     setupCustomScrollBar($('#topStoresForStoreCategory'), true, {enable: true, scrollType: "pixels", scrollAmount: width}, false);
+
+    var elCovered = 1;
+    var $element = $('#topStoresForStoreCategory'),
+        $scrollContainer = null;
+    if ($element.hasClass("scrollContainer")) {
+        $scrollContainer = $element;
+    } else {
+        $scrollContainer = $element.find(".scrollContainer");
+    }
+
+    var autoScrollHandler = function() {
+        $scrollContainer.mCustomScrollbar("scrollTo", 645 * elCovered);
+        elCovered += 1;
+        if(elCovered > $element.find('.showcaseItem').length) {
+            $scrollContainer.mCustomScrollbar("scrollTo", "first");
+            elCovered = 1;
+        }
+
+    };
+    var intervalID = setInterval(autoScrollHandler, 5000);
+    $scrollContainer.hover(
+      function() {
+        clearInterval(intervalID);
+        return false;
+      }, function() {
+        elCovered = 1;
+        $scrollContainer.mCustomScrollbar("scrollTo", "first");
+        intervalID = setInterval(autoScrollHandler, 5000);
+        return false;
+      }
+    );
     // setupCustomScrollBar($('#topReviewsForStoreCategory'));
 
     // $(".innerBox").mCustomScrollbar({
@@ -54,6 +88,10 @@ $(document).ready(function() {
     $('.updateTrends').click(function(event){
         update_trends_handler(event, this);
         return false;
+    });
+    $('#pinnedStoresForStoreCategory').dcPinterestFeed({
+        id: ['urbanladder', 'excitinglives', 'cardekho', 'gaadi', 'theplaycan'], 
+        tweetId: 'designchemical'
     });
 });
 </script>
