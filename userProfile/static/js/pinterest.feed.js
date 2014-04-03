@@ -40,7 +40,7 @@
 					dataType: 'jsonp',
 					success: function(a){
 						a = a.responseData.feed.entries;
-						$.each(a, function(i,item){
+						$.each(a, function(i, item){
 							if(i < o.results){
 								var d = item.publishedDate,
 									img = '<a href="'+item.link+'"><img src="'+$('img',item.content).attr('src')+'" alt="" /></a>',
@@ -77,7 +77,7 @@
 								$c.isotope({itemSelector : 'li'});
 							} else {
 								$c.isotope(
-									 'insert', $(html), undefined
+									 'reLayout', undefined
 								);
 							}
 							$('li',$c).fadeIn();
