@@ -285,6 +285,19 @@ var install_share_object_handler =  function($parent_element) {
     }
 }
 
+var onFancyboxUpdateCallback = function() {
+    $('.fancybox-inner').mCustomScrollbar({
+            verticalScroll:true,
+            theme:"dark-thick",
+            mouseWheel:true,
+            autoHideScrollbar:true,
+            contentTouchScroll:true,
+            advanced:{
+                updateOnContentResize: true
+            }
+        });        
+};
+
 var doOpenUrlWithIframeFancyBox = function(url) {
     $.fancybox({
         'frameWidth'        :  500,
@@ -307,12 +320,14 @@ var doOpenUrlWithIframeFancyBox = function(url) {
 var doOpenUrlWithAjaxFancyBox = function(url, afterShowCallback, title, scroll, afterCloseCallback) {
     var doScroll = 'no';
     var afterCloseCallbackImpl = function() { };
+
     if (typeof scroll !== "undefined") {
         doScroll = scroll;
     }
     if (typeof afterCloseCallback !== "undefined" && typeof afterCloseCallback === "function") {
         afterCloseCallbackImpl = afterCloseCallback;
     }
+
     $.fancybox({
         width               : 500,
         minHeight           : 50,
@@ -321,6 +336,7 @@ var doOpenUrlWithAjaxFancyBox = function(url, afterShowCallback, title, scroll, 
         openEffect          : 'fade',
         closeEffect         : 'fade',
         type                : 'ajax',
+        
         helpers             :   {  title : {
                 					type: 			'float',
                 					position : 		'bottom'
@@ -337,7 +353,8 @@ var doOpenUrlWithAjaxFancyBox = function(url, afterShowCallback, title, scroll, 
                               },
         afterClose          : afterCloseCallbackImpl,
         'title'				: title,
-        'titleShow'      	: 'true'
+        'titleShow'      	: 'true',
+        onUpdate 			: onFancyboxUpdateCallback
         //,                
         // ajax                :   {
         //                             complete    : function(jqXHR, textStatus) {
