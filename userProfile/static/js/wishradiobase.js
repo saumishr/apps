@@ -286,16 +286,21 @@ var install_share_object_handler =  function($parent_element) {
 }
 
 var onFancyboxUpdateCallback = function() {
-    $('.fancybox-inner').mCustomScrollbar({
-            verticalScroll:true,
-            theme:"dark-thick",
-            mouseWheel:true,
-            autoHideScrollbar:true,
-            contentTouchScroll:true,
-            advanced:{
-                updateOnContentResize: true
-            }
-        });        
+	var $scrollContainer = $('.fancybox-inner');
+	if ($scrollContainer && !$scrollContainer.hasClass('mCustomScrollbar')) {
+	    $scrollContainer.mCustomScrollbar({
+	            verticalScroll:true,
+	            theme:"dark-thick",
+	            mouseWheel:true,
+	            autoHideScrollbar:true,
+	            contentTouchScroll:true,
+	            advanced:{
+	                updateOnContentResize: true
+	            }
+	        }); 
+	} else {
+		$scrollContainer.mCustomScrollbar('update');
+	}       
 };
 
 var doOpenUrlWithIframeFancyBox = function(url) {
